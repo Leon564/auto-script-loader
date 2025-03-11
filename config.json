@@ -1,0 +1,36 @@
+{
+  "swordalada.org": {
+    "removeScope": [{ "selector": ":scope > div", "position": 1 }]
+  },
+  "tresdaos.com": {
+    "remove": ["#teaserbottom"]
+  },
+  "olympus": {
+    "remove": ["[ad-placement=\"footer\"]"]
+  },
+  "traduccionesamistosas": {
+    "remove": ["div[id^=\"ad-container\"]"]
+  },
+  "manhwaweb.com": {
+    "keyboardNavigation": {
+      "next": {
+        "selector": "a.flex.items-center.bg-verde.border-verde-text.border.rounded-sm",
+        "matchText": "Cap. Siguiente"
+      },
+      "prev": {
+        "selector": "a.flex.items-center.bg-verde.border-verde-text.border.rounded-sm",
+        "matchText": "Cap. Anterior"
+      }
+    }
+  },
+  "zonatmo.com": {
+    "keyboardNavigation": {
+      "next": { "selector": ".chapter-arrow.chapter-next" },
+      "prev": { "selector": ".chapter-arrow.chapter-prev" }
+    },
+    "checkUrl": true
+  },
+  "mangacrab.yopres.com": {
+    "remove": [".manga-target", ".anuncio", ".worldreaml-duyuru-bar"]
+  }
+}

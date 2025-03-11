@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="site-info">
+      <h2>Configuración del Sitio</h2>
+      <div id="currentSite"></div>
+    </div>
+    
+    <div class="action-form">
+      <div class="form-group">
+        <label for="actionType">Tipo de Acción:</label>
+        <select id="actionType">
+          <option value="">Seleccionar acción...</option>
+          <option value="remove">Eliminar elemento</option>
+          <option value="removeScope">Eliminar elemento por posición</option>
+          <option value="keyboardNavigation">Navegación por teclado</option>
+        </select>
+      </div>
+
+      <div id="selectorGroup" class="form-group hidden">
+        <label for="selector">Selector CSS:</label>
+        <input type="text" id="selector" placeholder="Ej: #elemento, .clase">
+      </div>
+
+      <div id="positionGroup" class="form-group hidden">
+        <label for="position">Posición:</label>
+        <input type="number" id="position" min="0" placeholder="Índice del elemento">
+      </div>
+
+      <div id="navigationGroup" class="form-group hidden">
+        <div>
+          <label for="nextSelector">Selector siguiente:</label>
+          <input type="text" id="nextSelector" placeholder="Selector para siguiente">
+        </div>
+        <div>
+          <label for="prevSelector">Selector anterior:</label>
+          <input type="text" id="prevSelector" placeholder="Selector para anterior">
+        </div>
+        <div>
+          <label for="matchText">Texto a coincidir (opcional):</label>
+          <input type="text" id="matchText" placeholder="Texto exacto del botón">
+        </div>
+      </div>
+
+      <button id="addAction">Agregar Acción</button>
+    </div>
+
+    <div class="current-actions">
+      <h3>Acciones Configuradas</h3>
+      <div id="actionsList"></div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
