@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Leon564-extension",
+  "name": "auto-script-loader",
   "version": "2.0",
   "description": "Extensión para cargar scripts automáticamente en páginas web",
   "icons": {

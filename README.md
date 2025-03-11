@@ -1,4 +1,4 @@
-# Leon564-extension
+# auto-script-loader
 
 Extensión para cargar scripts automáticamente en páginas web. Esta extensión de Chrome te permite automatizar acciones en sitios web mediante configuraciones personalizadas.
 
