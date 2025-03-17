@@ -1,6 +1,7 @@
 {
   "swordalada.org": {
-    "removeScope": [{ "selector": ":scope > div", "position": 1 }]
+    "removeScope": [{ "selector": ":scope > div", "position": 1 }],
+    "removeRandomDiv": true
   },
   "tresdaos.com": {
     "remove": ["#teaserbottom"]

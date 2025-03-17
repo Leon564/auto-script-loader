@@ -19,10 +19,31 @@ body {
   border-bottom: 1px solid #eee;
 }
 
-.site-info h2 {
-  margin: 0 0 10px 0;
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.site-header h2 {
+  margin: 0;
   color: #333;
   font-size: 1.2em;
+}
+
+.random-div-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #555;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.random-div-toggle input[type="checkbox"] {
+  width: auto;
+  margin: 0;
 }
 
 #currentSite {

@@ -49,6 +49,21 @@ document.getElementById('actionType').addEventListener('change', (e) => {
   }
 });
 
+document.getElementById('removeRandomDiv').addEventListener('change', async (e) => {
+  if (!config[currentDomain]) {
+    config[currentDomain] = {};
+  }
+
+  if (e.target.checked) {
+    config[currentDomain].removeRandomDiv = true;
+  } else {
+    delete config[currentDomain].removeRandomDiv;
+  }
+
+  await saveConfig();
+  displayCurrentActions();
+});
+
 document.getElementById('addAction').addEventListener('click', async () => {
   const actionType = document.getElementById('actionType').value;
   if (!actionType) return;
@@ -110,7 +125,21 @@ function displayCurrentActions() {
   if (!config[currentDomain]) return;
 
   const actions = config[currentDomain];
+
+  // Update checkbox state
+  document.getElementById('removeRandomDiv').checked = !!actions.removeRandomDiv;
   
+  if (actions.removeRandomDiv) {
+    addActionItem('Eliminar divs aleatorios', 
+      'Eliminar divs con ID/clase aleatoria',
+      () => {
+        delete actions.removeRandomDiv;
+        document.getElementById('removeRandomDiv').checked = false;
+        saveConfig();
+        displayCurrentActions();
+      });
+  }
+
   if (actions.remove) {
     actions.remove.forEach((selector, index) => {
       addActionItem('Eliminar elemento', `Selector: ${selector}`, () => {

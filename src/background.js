@@ -74,6 +74,18 @@ function handlePageScripts(config) {
     });
   }
 
+  if (config.removeRandomDiv) {
+    const randomPattern = /^[a-z]{50,}$/;
+    document.querySelectorAll('div').forEach(div => {
+      const id = div.id;
+      const classes = Array.from(div.classList);
+      
+      if ((id && randomPattern.test(id)) || classes.some(cls => randomPattern.test(cls))) {
+        div.remove();
+      }
+    });
+  }
+
   if (config.keyboardNavigation) {
     document.addEventListener("keydown", (event) => {
       const isNext = event.key === "ArrowRight";
@@ -115,6 +127,15 @@ function handlePageScripts(config) {
                 if (i === scope.position) el.remove();
               });
             });
+          }
+          if (config.removeRandomDiv && node.tagName === 'DIV') {
+            const id = node.id;
+            const classes = Array.from(node.classList);
+            const randomPattern = /^[a-z]{60,}$/;
+            
+            if ((id && randomPattern.test(id)) || classes.some(cls => randomPattern.test(cls))) {
+              node.remove();
+            }
           }
         }
       });
