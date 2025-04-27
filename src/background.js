@@ -1,10 +1,10 @@
 let config = {};
 
-chrome.storage.local.get('config').then(result => {
+chrome.storage.local.get("config").then((result) => {
   if (Object.keys(result).length === 0) {
-    fetch(chrome.runtime.getURL('config.json'))
-      .then(response => response.json())
-      .then(data => {
+    fetch(chrome.runtime.getURL("config.json"))
+      .then((response) => response.json())
+      .then((data) => {
         config = data;
         chrome.storage.local.set({ config });
       });
@@ -14,12 +14,12 @@ chrome.storage.local.get('config').then(result => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'updateConfig') {
+  if (message.type === "updateConfig") {
     config = message.config;
     chrome.tabs.query({}, (tabs) => {
-      tabs.forEach(tab => {
+      tabs.forEach((tab) => {
         if (!tab.url) return;
-        
+
         for (const domain in config) {
           if (tab.url.includes(domain)) {
             updateTab(tab.id, config[domain]);
@@ -34,9 +34,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 function updateTab(tabId, domainConfig) {
   chrome.scripting.insertCSS({
     target: { tabId },
-    css: domainConfig.remove
-      ?.map((sel) => `${sel} { display: none !important; }`)
-      .join("\n") || "",
+    css:
+      domainConfig.remove
+        ?.map((sel) => `${sel} { display: none !important; }`)
+        .join("\n") || "",
   });
 
   chrome.scripting.executeScript({
@@ -76,11 +77,14 @@ function handlePageScripts(config) {
 
   if (config.removeRandomDiv) {
     const randomPattern = /^[a-z]{50,}$/;
-    document.querySelectorAll('div').forEach(div => {
+    document.querySelectorAll("div").forEach((div) => {
       const id = div.id;
       const classes = Array.from(div.classList);
-      
-      if ((id && randomPattern.test(id)) || classes.some(cls => randomPattern.test(cls))) {
+
+      if (
+        (id && randomPattern.test(id)) ||
+        classes.some((cls) => randomPattern.test(cls))
+      ) {
         div.remove();
       }
     });
@@ -99,6 +103,12 @@ function handlePageScripts(config) {
           button = Array.from(
             document.querySelectorAll(navConfig.selector)
           ).find((a) => a.textContent.trim() === navConfig.matchText);
+        }
+
+        if (button && button.tagName === "DIV") {
+          button = Array.from(button.children).find(
+            (child) => child.tagName === "A" || child.tagName === "BUTTON"
+          );
         }
 
         if (button) button.click();
@@ -128,12 +138,15 @@ function handlePageScripts(config) {
               });
             });
           }
-          if (config.removeRandomDiv && node.tagName === 'DIV') {
+          if (config.removeRandomDiv && node.tagName === "DIV") {
             const id = node.id;
             const classes = Array.from(node.classList);
             const randomPattern = /^[a-z]{60,}$/;
-            
-            if ((id && randomPattern.test(id)) || classes.some(cls => randomPattern.test(cls))) {
+
+            if (
+              (id && randomPattern.test(id)) ||
+              classes.some((cls) => randomPattern.test(cls))
+            ) {
               node.remove();
             }
           }
