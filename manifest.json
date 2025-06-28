@@ -12,7 +12,10 @@
     "activeTab",
     "scripting",
     "tabs",
-    "storage"
+    "storage",
+    "webRequest",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
   ],
   "host_permissions": ["<all_urls>"],
   "action": {
@@ -26,8 +29,17 @@
   "background": {
     "service_worker": "src/background.js"
   },
-  "web_accessible_resources": [{
-    "resources": ["config.json"],
-    "matches": ["<all_urls>"]
-  }]
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/blocker.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["config.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
