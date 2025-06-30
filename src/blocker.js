@@ -1,5 +1,17 @@
 // Interceptar y bloquear scripts maliciosos
-const observer = new MutationObserver((mutations) => {
+const observer = new MutationObserver(async (mutations) => {
+  //solo funcionar en las url de config.json
+
+  const response = await fetch(chrome.runtime.getURL("config.json"));
+  config = await response.json();
+
+  keys = Object.keys(config);
+
+  // si la url(key) de config.json coincide con la actual, bloquear
+  if (!keys.includes(window.location.hostname)) {
+    return;
+  }
+  console.log("✅ Scripts bloqueados:", keys);
   for (const mutation of mutations) {
     for (const node of mutation.addedNodes) {
       if (node.tagName === "SCRIPT") {
