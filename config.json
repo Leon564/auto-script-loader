@@ -31,7 +31,7 @@
     },
     "checkUrl": true
   },
-  "mangacrab2.yopres.com": {
+  "mangacrab.topmanhuas.org": {
     "remove": [".manga-target", ".anuncio", ".worldreaml-duyuru-bar"]
   }
 }
