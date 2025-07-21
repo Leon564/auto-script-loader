@@ -1,11 +1,14 @@
 let config = {};
 let currentDomain = '';
 
+// Firefox compatibility: usar browser o chrome
+const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+
 async function loadConfig() {
   try {
-    const result = await chrome.storage.local.get('config');
+    const result = await browserAPI.storage.local.get('config');
     if (Object.keys(result).length === 0) {
-      const response = await fetch(chrome.runtime.getURL('config.json'));
+      const response = await fetch(browserAPI.runtime.getURL('config.json'));
       config = await response.json();
     } else {
       config = result.config;
@@ -17,7 +20,7 @@ async function loadConfig() {
 }
 
 async function getCurrentTab() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const [tab] = await browserAPI.tabs.query({ active: true, currentWindow: true });
   if (tab?.url) {
     const url = new URL(tab.url);
     currentDomain = url.hostname;
@@ -193,8 +196,8 @@ function addActionItem(type, details, onDelete) {
 
 async function saveConfig() {
   try {
-    await chrome.storage.local.set({ config });
-    await chrome.runtime.sendMessage({ 
+    await browserAPI.storage.local.set({ config });
+    await browserAPI.runtime.sendMessage({ 
       type: 'updateConfig', 
       config: config 
     });

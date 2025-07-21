@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "auto-script-loader",
   "version": "2.0",
   "description": "Extensión para cargar scripts automáticamente en páginas web",
@@ -10,15 +10,12 @@
   },
   "permissions": [
     "activeTab",
-    "scripting",
     "tabs",
     "storage",
     "webRequest",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess"
+    "<all_urls>"
   ],
-  "host_permissions": ["<all_urls>"],
-  "action": {
+  "browser_action": {
     "default_popup": "src/popup.html",
     "default_icon": {
       "16": "assets/icons/icon16.png",
@@ -27,7 +24,8 @@
     }
   },
   "background": {
-    "service_worker": "src/background.js"
+    "scripts": ["src/background.js"],
+    "persistent": false
   },
   "content_scripts": [
     {
@@ -36,10 +34,11 @@
       "run_at": "document_start"
     }
   ],
-  "web_accessible_resources": [
-    {
-      "resources": ["config.json"],
-      "matches": ["<all_urls>"]
+  "web_accessible_resources": ["config.json"],
+  "applications": {
+    "gecko": {
+      "id": "auto-script-loader@extension.local",
+      "strict_min_version": "109.0"
     }
-  ]
+  }
 }

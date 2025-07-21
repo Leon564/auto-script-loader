@@ -1,22 +1,25 @@
 let config = {};
 
-chrome.storage.local.get("config").then((result) => {
+// Firefox compatibility: usar browser o chrome
+const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+
+browserAPI.storage.local.get("config").then((result) => {
   if (Object.keys(result).length === 0) {
-    fetch(chrome.runtime.getURL("config.json"))
+    fetch(browserAPI.runtime.getURL("config.json"))
       .then((response) => response.json())
       .then((data) => {
         config = data;
-        chrome.storage.local.set({ config });
+        browserAPI.storage.local.set({ config });
       });
   } else {
     config = result.config;
   }
 });
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "updateConfig") {
     config = message.config;
-    chrome.tabs.query({}, (tabs) => {
+    browserAPI.tabs.query({}, (tabs) => {
       tabs.forEach((tab) => {
         if (!tab.url) return;
 
@@ -32,22 +35,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 function updateTab(tabId, domainConfig) {
-  chrome.scripting.insertCSS({
-    target: { tabId },
-    css:
-      domainConfig.remove
-        ?.map((sel) => `${sel} { display: none !important; }`)
-        .join("\n") || "",
-  });
+  // Firefox: usar insertCSS en lugar de scripting.insertCSS
+  const cssCode = domainConfig.remove
+    ?.map((sel) => `${sel} { display: none !important; }`)
+    .join("\n") || "";
+  
+  if (cssCode) {
+    browserAPI.tabs.insertCSS(tabId, { code: cssCode });
+  }
 
-  chrome.scripting.executeScript({
-    target: { tabId },
-    func: handlePageScripts,
-    args: [domainConfig],
+  // Firefox: usar executeScript en lugar de scripting.executeScript
+  browserAPI.tabs.executeScript(tabId, {
+    code: `
+      const config = ${JSON.stringify(domainConfig)};
+      (${handlePageScripts.toString()})(config);
+    `
   });
 }
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+browserAPI.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!tab.url) return;
 
   for (const domain in config) {
