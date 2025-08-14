@@ -32,13 +32,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 function updateTab(tabId, domainConfig) {
-  chrome.scripting.insertCSS({
-    target: { tabId },
-    css:
+  let cssRules = [];
+  
+  // CSS para eliminar elementos
+  if (domainConfig.remove) {
+    cssRules.push(
       domainConfig.remove
-        ?.map((sel) => `${sel} { display: none !important; }`)
-        .join("\n") || "",
-  });
+        .map((sel) => `${sel} { display: none !important; }`)
+        .join("\n")
+    );
+  }
+  
+  // CSS para desactivar blur
+  if (domainConfig.removeBlur) {
+    cssRules.push("* { filter: none !important; }");
+  }
+
+  if (cssRules.length > 0) {
+    chrome.scripting.insertCSS({
+      target: { tabId },
+      css: cssRules.join("\n"),
+    });
+  }
 
   chrome.scripting.executeScript({
     target: { tabId },
@@ -87,6 +102,35 @@ function handlePageScripts(config) {
       ) {
         div.remove();
       }
+    });
+  }
+
+  if (config.removeBlur) {
+    // Desactivar filter: blur() en todos los elementos
+    const removeBlurFromElements = () => {
+      document.querySelectorAll("*").forEach((element) => {
+        const computedStyle = window.getComputedStyle(element);
+        if (computedStyle.filter && computedStyle.filter.includes("blur")) {
+          element.style.filter = element.style.filter.replace(/blur\([^)]*\)/g, '').trim();
+          if (!element.style.filter) {
+            element.style.removeProperty('filter');
+          }
+        }
+      });
+    };
+    
+    removeBlurFromElements();
+    
+    // También crear un observer para nuevos elementos
+    const blurObserver = new MutationObserver(() => {
+      removeBlurFromElements();
+    });
+    
+    blurObserver.observe(document.body, { 
+      childList: true, 
+      subtree: true, 
+      attributes: true, 
+      attributeFilter: ['style', 'class'] 
     });
   }
 
@@ -149,6 +193,22 @@ function handlePageScripts(config) {
             ) {
               node.remove();
             }
+          }
+
+          if (config.removeBlur) {
+            // Remover blur de elementos recién agregados
+            const checkAndRemoveBlur = (element) => {
+              const computedStyle = window.getComputedStyle(element);
+              if (computedStyle.filter && computedStyle.filter.includes("blur")) {
+                element.style.filter = element.style.filter.replace(/blur\([^)]*\)/g, '').trim();
+                if (!element.style.filter) {
+                  element.style.removeProperty('filter');
+                }
+              }
+              // También revisar elementos hijos
+              element.querySelectorAll("*").forEach(checkAndRemoveBlur);
+            };
+            checkAndRemoveBlur(node);
           }
         }
       });

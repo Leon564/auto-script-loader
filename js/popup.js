@@ -64,6 +64,21 @@ document.getElementById('removeRandomDiv').addEventListener('change', async (e) 
   displayCurrentActions();
 });
 
+document.getElementById('removeBlur').addEventListener('change', async (e) => {
+  if (!config[currentDomain]) {
+    config[currentDomain] = {};
+  }
+
+  if (e.target.checked) {
+    config[currentDomain].removeBlur = true;
+  } else {
+    delete config[currentDomain].removeBlur;
+  }
+
+  await saveConfig();
+  displayCurrentActions();
+});
+
 document.getElementById('addAction').addEventListener('click', async () => {
   const actionType = document.getElementById('actionType').value;
   if (!actionType) return;
@@ -128,6 +143,7 @@ function displayCurrentActions() {
 
   // Update checkbox state
   document.getElementById('removeRandomDiv').checked = !!actions.removeRandomDiv;
+  document.getElementById('removeBlur').checked = !!actions.removeBlur;
   
   if (actions.removeRandomDiv) {
     addActionItem('Eliminar divs aleatorios', 
@@ -135,6 +151,17 @@ function displayCurrentActions() {
       () => {
         delete actions.removeRandomDiv;
         document.getElementById('removeRandomDiv').checked = false;
+        saveConfig();
+        displayCurrentActions();
+      });
+  }
+
+  if (actions.removeBlur) {
+    addActionItem('Desactivar filtros blur', 
+      'Quitar todos los efectos filter: blur()',
+      () => {
+        delete actions.removeBlur;
+        document.getElementById('removeBlur').checked = false;
         saveConfig();
         displayCurrentActions();
       });
